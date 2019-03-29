@@ -44,10 +44,9 @@ class JSONField(EncryptedMixin, models.TextField):
     def get_prep_value(self, value):
         """Convert value to JSON string before save"""
         try:
-            value = json.dumps(value)
+            return json.dumps(value)
         except Exception as err:
             raise ValidationError(str(err))
-        return encrypt_str(str(value))
 
     def value_to_string(self, obj):
         """Return value from object converted to string properly"""
