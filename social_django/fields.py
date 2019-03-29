@@ -52,25 +52,13 @@ class JSONField(EncryptedTextField):
             except Exception as err:
                 raise ValidationError(str(err))
 
-    def get_prep_value(self, value, connection):
-        value = super(EncryptedMixin, self).get_db_prep_save(value, connection)
-        
-        if value is None:
-            return value
+    def get_prep_value(self, value):
+        """Convert value to JSON string before save"""
         try:
             value = json.dumps(value)
         except Exception as err:
             raise ValidationError(str(err))
-        if PY2:
-            return encrypt_str(unicode(value))
-        # decode the encrypted value to a unicode string, else this breaks in pgsql
         return (encrypt_str(str(value))).decode('utf-8')
-
-        """Convert value to JSON string before save"""
-        try:
-            return encrypt_str(unicode(json.dumps(value)))
-        except Exception as err:
-            raise ValidationError(str(err))
 
     def value_to_string(self, obj):
         """Return value from object converted to string properly"""
