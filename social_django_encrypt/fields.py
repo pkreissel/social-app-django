@@ -39,7 +39,7 @@ class JSONField(JSONFieldBase):
             except Exception as err:
                 raise ValidationError(str(err))
         else:
-            return value
+            return super(EncryptedMixin, self).to_python(value)
 
     def validate(self, value, model_instance):
         """Check value is a valid JSON string, raise ValidationError on
@@ -51,7 +51,20 @@ class JSONField(JSONFieldBase):
             except Exception as err:
                 raise ValidationError(str(err))
 
-    def get_prep_value(self, value):
+    def get_prep_value(self, value, connection):
+        value = super(EncryptedMixin, self).get_db_prep_save(value, connection)
+        
+        if value is None:
+            return value
+        try:
+            value = json.dumps(value)
+        except Exception as err:
+            raise ValidationError(str(err))
+        if PY2:
+            return encrypt_str(unicode(value))
+        # decode the encrypted value to a unicode string, else this breaks in pgsql
+        return (encrypt_str(str(value))).decode('utf-8')
+
         """Convert value to JSON string before save"""
         try:
             return encrypt_str(unicode(json.dumps(value)))
