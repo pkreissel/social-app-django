@@ -12,7 +12,7 @@ from social_core.utils import setting_name
 
 
 
-class JSONField(EncryptedMixin, EncryptedTextField):
+class JSONField(EncryptedMixin, models.TextField):
     """Simple JSON field that stores python structures as JSON strings
     on database.
     """
