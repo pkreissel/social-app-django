@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_text
+from django.utils.six import PY2, string_types
 from encrypted_model_fields.fields import EncryptedTextField as JSONFieldBase
 from social_core.utils import setting_name
 
