@@ -24,7 +24,7 @@ def load_requirements():
     return open(join(dirname(__file__), 'requirements.txt')).readlines()
 
 setup(
-    name='social-auth-app-django',
+    name='social-auth-app-django-emcrypted',
     version=read_version(),
     author='Matias Aguirre',
     author_email='matiasaguirre@gmail.com',

@@ -5,13 +5,10 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import force_text
-
+from encrypted_model_fields.fields import EncryptedTextField as JSONFieldBase
 from social_core.utils import setting_name
 
-if getattr(settings, setting_name('POSTGRES_JSONFIELD'), False):
-    from django.contrib.postgres.fields import JSONField as JSONFieldBase
-else:
-    JSONFieldBase = models.TextField
+
 
 
 class JSONField(JSONFieldBase):

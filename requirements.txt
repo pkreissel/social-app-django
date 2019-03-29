@@ -1,2 +1,3 @@
 six
 social-auth-core >= 1.2.0
+django-encrypted-model-fields
