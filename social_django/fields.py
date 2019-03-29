@@ -12,7 +12,7 @@ from social_core.utils import setting_name
 
 
 
-class JSONField(EncryptedTextField):
+class JSONField(EncryptedMixin, EncryptedTextField):
     """Simple JSON field that stores python structures as JSON strings
     on database.
     """
@@ -29,23 +29,25 @@ class JSONField(EncryptedTextField):
         Convert the input JSON value into python structures, raises
         django.core.exceptions.ValidationError if the data can't be converted.
         """
-        if self.blank and not value:
-            return {}
-        value = value or '{}'
-        if isinstance(value, (bytes, string_types[0])):
-            if isinstance(value, bytes):
-                value = value.decode('utf-8')
-            try:
-                value = decrypt_str(value)
-            except Exception as err:
-                print(err)
-                raise
-            try:
-                return json.loads(value)
-            except Exception as err:
-                raise ValidationError(str(err))
-        else:
-            return super(EncryptedMixin, self).to_python(value)
+        # if self.blank and not value:
+        #     return {}
+        # value = value or '{}'
+        # if isinstance(value, (bytes, string_types[0])):
+        #     if isinstance(value, bytes):
+        #         value = value.decode('utf-8')
+        #     try:
+        #         value = decrypt_str(value)
+        #     except Exception as err:
+        #         print(err)
+        #         raise
+        #     try:
+        #         value = json.loads(value)
+        #     except Exception as err:
+        #         raise ValidationError(str(err))
+        try:
+            return json.loads(super(JSONField, self).to_python(value))
+        except Exception as err:
+            raise ValidationError(str(err))
 
     def validate(self, value, model_instance):
         """Check value is a valid JSON string, raise ValidationError on
