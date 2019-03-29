@@ -25,14 +25,11 @@ class JSONField(EncryptedMixin, models.TextField):
         return self.to_python(value)
 
     def to_python(self, value):
-        """
-        Convert the input JSON value into python structures, raises
-        django.core.exceptions.ValidationError if the data can't be converted.
-        """
         try:
             return json.loads(super(JSONField, self).to_python(value))
         except Exception as err:
-            raise ValidationError(str(err))
+            print(str(err))
+            raise
 
     def validate(self, value, model_instance):
         """Check value is a valid JSON string, raise ValidationError on
