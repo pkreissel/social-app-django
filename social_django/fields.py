@@ -36,7 +36,12 @@ class JSONField(EncryptedTextField):
             if isinstance(value, bytes):
                 value = value.decode('utf-8')
             try:
-                return json.loads(decrypt_str(value))
+                value = decrypt_str(value)
+            except Exception as err:
+                print(err)
+                raise
+            try:
+                return json.loads(value)
             except Exception as err:
                 raise ValidationError(str(err))
         else:
