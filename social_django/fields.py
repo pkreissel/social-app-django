@@ -31,11 +31,11 @@ class JSONField(JSONFieldBase):
         if self.blank and not value:
             return {}
         value = value or '{}'
-        if isinstance(value, six.binary_type):
-            value = six.text_type(value, 'utf-8')
-        if isinstance(value, six.string_types):
+        if isinstance(value, (bytes, string_types[0])):
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
             try:
-                return json.loads(value)
+                return json.loads(decrypt_str(value))
             except Exception as err:
                 raise ValidationError(str(err))
         else:
@@ -54,7 +54,7 @@ class JSONField(JSONFieldBase):
     def get_prep_value(self, value):
         """Convert value to JSON string before save"""
         try:
-            return json.dumps(value)
+            return encrypt_str(unicode(json.dumps(value)))
         except Exception as err:
             raise ValidationError(str(err))
 
